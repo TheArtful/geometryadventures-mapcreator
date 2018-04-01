@@ -45,6 +45,19 @@ public class World {
         this(new ShapeRenderer(), 0.02f, textureAtlas, new Map());
     }
 
+    public ScreenViewport getViewport() {
+        return viewport;
+    }
+
+    public void translateCamera(float deltaX, float deltaY) {
+        viewport.getCamera().position.x += deltaX;
+        viewport.getCamera().position.y += deltaY;
+    }
+
+    public void setViewport(ScreenViewport viewport) {
+        this.viewport = viewport;
+    }
+
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
@@ -101,5 +114,14 @@ public class World {
 
         shapeRenderer.circle(0, 0, 0.25f, 10);
         shapeRenderer.end();
+    }
+
+    public void setUnitsPerPixel(float unitsPerPixel) {
+        viewport.setUnitsPerPixel(unitsPerPixel);
+        viewport.update(viewport.getScreenWidth(), viewport.getScreenHeight());
+    }
+
+    public float getUnitsPerPixel() {
+        return viewport.getUnitsPerPixel();
     }
 }
