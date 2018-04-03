@@ -50,8 +50,8 @@ public class World {
     }
 
     public void translateCamera(float deltaX, float deltaY) {
-        viewport.getCamera().position.x += deltaX;
-        viewport.getCamera().position.y += deltaY;
+        viewport.getCamera().translate(deltaX, deltaY, 0);
+        viewport.update(width, height);
     }
 
     public void setViewport(ScreenViewport viewport) {
