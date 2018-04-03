@@ -1,0 +1,4 @@
+[{"type":"floor","textureName":"grass","xTiles":2,"numberOfTiles":4},
+{"type":"floor","textureName":"icy","xTiles":2,"numberOfTiles":4},
+{"type":"floor","textureName":"wood","xTiles":2,"numberOfTiles":4},
+{"type":"wall","textureName":"wall","xTiles":4,"numberOfTiles":32}]
