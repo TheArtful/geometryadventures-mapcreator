@@ -14,11 +14,16 @@ public class TileType {
     public String textureName;
     public int xTiles;
     public int numberOfTiles;
+    public boolean isPattern;
+    public int z;
 
-    public TileType(String type, String textureName, int xTiles, int numberOfTiles) {
+    public TileType(String type, String textureName, int xTiles, int numberOfTiles, boolean isPattern,
+                    int z) {
         this.type = type;
         this.textureName = textureName;
         this.xTiles = xTiles;
         this.numberOfTiles = numberOfTiles;
+        this.isPattern = isPattern;
+        this.z = z;
     }
 }

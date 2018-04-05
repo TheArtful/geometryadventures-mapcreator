@@ -22,8 +22,8 @@ public class Map {
         Gdx.app.log("Adding Tile", "x: " + tile.x + ", y: " + tile.y + ", textureName: " +
                 tile.textureName + ", index:" + tile.textureIndex);
         for (Tile t : tiles) {
-            if (t.x == tile.x && t.y == tile.y && tile.type.equals(t.type)) {
-                tiles.remove(t);
+            if (t.x == tile.x && t.y == tile.y && t.z == tile.z) {
+                removeTile(t);
                 break;
             }
         }
@@ -31,7 +31,7 @@ public class Map {
         Collections.sort(tiles, new Comparator<Tile>() {
             @Override
             public int compare(Tile tile, Tile t1) {
-                return (tile.z - t1.z < 0)? -1 : 1;
+                return (tile.z - t1.z < 0) ? -1 : 1;
             }
         });
     }

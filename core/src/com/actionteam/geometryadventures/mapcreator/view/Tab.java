@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +20,7 @@ public class Tab extends MyScrollPane {
     private List<TileType> tileTypes;
     private Resources resources;
     private Table table;
+    private ArrayList<TextureBox> textureBoxes;
 
     public Tab(List<TileType> tileTypes, Resources resources) {
         super(new Table(), resources.skin);
@@ -26,6 +28,7 @@ public class Tab extends MyScrollPane {
         this.tileTypes = tileTypes;
         this.skin = resources.skin;
         this.resources = resources;
+        textureBoxes = new ArrayList<TextureBox>();
 
         for (TileType type : tileTypes) {
             drawType(type);
@@ -40,7 +43,13 @@ public class Tab extends MyScrollPane {
                 resources);
         table.add(textureBox).width(resources.getSideBarWidth());
         table.row();
+        textureBoxes.add(textureBox);
     }
 
 
+    public void setTextureBoxListener(TextureBoxListener textureBoxListener) {
+        for (TextureBox textureBox : textureBoxes) {
+            textureBox.setListener(textureBoxListener);
+        }
+    }
 }

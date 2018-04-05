@@ -32,4 +32,12 @@ public class UI extends Table {
                 width(resources.getSideBarWidth()).height(resources.getUiHeight()).
                 align(Align.right);
     }
+
+    public SideBar getSideBar() {
+        return sideBar;
+    }
+
+    public TopBar getTopBar() {
+        return topBar;
+    }
 }

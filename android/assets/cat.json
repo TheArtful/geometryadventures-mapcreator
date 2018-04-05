@@ -1,4 +1,4 @@
-[{"type":"floor","textureName":"grass","xTiles":2,"numberOfTiles":4},
-{"type":"floor","textureName":"icy","xTiles":2,"numberOfTiles":4},
-{"type":"floor","textureName":"wood","xTiles":2,"numberOfTiles":4},
-{"type":"wall","textureName":"wall","xTiles":4,"numberOfTiles":32}]
+[{"type":"floor","textureName":"grass","xTiles":2,"numberOfTiles":4, "isPattern":true, "z":0},
+{"type":"floor","textureName":"icy","xTiles":2,"numberOfTiles":4, "isPattern":true, "z":0},
+{"type":"floor","textureName":"wood","xTiles":2,"numberOfTiles":4, "isPattern":true, "z":0},
+{"type":"wall","textureName":"wall","xTiles":4,"numberOfTiles":32, "isPattern":false, "z":1}]

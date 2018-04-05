@@ -1,16 +1,9 @@
 package com.actionteam.geometryadventures.mapcreator;
 
 import com.actionteam.geometryadventures.mapcreator.controller.Controller;
-import com.actionteam.geometryadventures.mapcreator.controller.WorldController;
-import com.actionteam.geometryadventures.mapcreator.view.UI;
-import com.actionteam.geometryadventures.mapcreator.view.World;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Main extends ApplicationAdapter {
 

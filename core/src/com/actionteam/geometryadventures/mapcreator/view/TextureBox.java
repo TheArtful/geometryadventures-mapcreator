@@ -21,6 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class TextureBox extends Table {
 
+    public static final int NOTHING = -1;
+    public static final int ALL = -2;
+
     private Resources resources;
     private Skin skin;
     private TextureAtlas textureAtlas;
@@ -73,7 +76,7 @@ public class TextureBox extends Table {
         Vector2 pos = null;
         float width = 0;
         float height = 0;
-        if (selectedTile != -1) {
+        if (selectedTile >= 0) {
             Image selectedImage = tiles[selectedTile];
             pos = selectedImage.localToStageCoordinates(new Vector2(0, 0));
             width = selectedImage.getWidth();
@@ -88,7 +91,7 @@ public class TextureBox extends Table {
             Gdx.gl20.glLineWidth(3);
             shapeRenderer.setProjectionMatrix(getStage().getViewport().getCamera().combined);
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.DARK_GRAY);
+            shapeRenderer.setColor(Color.LIGHT_GRAY);
 
             shapeRenderer.rect(pos.x,
                     pos.y, width, height);
@@ -96,5 +99,4 @@ public class TextureBox extends Table {
             batch.begin();
         }
     }
-
 }

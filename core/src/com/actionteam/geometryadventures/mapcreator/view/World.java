@@ -2,8 +2,10 @@ package com.actionteam.geometryadventures.mapcreator.view;
 
 import com.actionteam.geometryadventures.mapcreator.model.Map;
 import com.actionteam.geometryadventures.mapcreator.model.Tile;
+import com.actionteam.geometryadventures.mapcreator.model.TileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -25,7 +27,6 @@ public class World {
     private int width;
     private int height;
     private Color gridColor;
-    private boolean drawGrid;
     private Map map;
 
     public World(ShapeRenderer shapeRenderer, float unitsPerPixel, TextureAtlas textureAtlas, Map map) {
@@ -37,12 +38,11 @@ public class World {
         viewport.setUnitsPerPixel(unitsPerPixel);
 
         gridColor = Color.DARK_GRAY;
-        drawGrid = true;
         batch = new SpriteBatch();
     }
 
-    public World(TextureAtlas textureAtlas) {
-        this(new ShapeRenderer(), 0.02f, textureAtlas, new Map());
+    public World(TextureAtlas textureAtlas, Map map) {
+        this(new ShapeRenderer(), 0.02f, textureAtlas, map);
     }
 
     public ScreenViewport getViewport() {
@@ -91,6 +91,24 @@ public class World {
         batch.end();
     }
 
+    public void renderPreviewPattern(int x1, int y1, int x2, int y2, int selectedIndex,
+                                     TileType previewedTile) {
+        batch.begin();
+        for (int x = x1; x <= x2; x++) {
+            for (int y = y1; y <= y2; y++) {
+                int index;
+                if (selectedIndex == TextureBox.ALL) {
+                    index = Math.abs(x % previewedTile.xTiles) + previewedTile.xTiles *
+                            Math.abs(y % (previewedTile.numberOfTiles / previewedTile.xTiles));
+                } else
+                    index = selectedIndex;
+                batch.draw(textureAtlas.findRegion(previewedTile.textureName, index),
+                        x, y, 1, 1);
+            }
+        }
+        batch.end();
+    }
+
     private void drawGrid() {
         Vector2 topLeft = viewport.unproject(new Vector2(x, y));
         Vector2 bottomRight = viewport.unproject(new Vector2(x + width, y + height));
@@ -123,5 +141,15 @@ public class World {
 
     public float getUnitsPerPixel() {
         return viewport.getUnitsPerPixel();
+    }
+
+    public void renderDeletePreview(float x1, float y1, float x2, float y2) {
+        Gdx.gl20.glEnable(GL20.GL_BLEND);
+        Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        shapeRenderer.setColor(0.5f, 0.4f, 0.7f, 0.5f);
+        shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.rect(x1, y1, x2 - x1, y2 - y1);
+        shapeRenderer.end();
     }
 }

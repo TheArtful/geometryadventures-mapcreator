@@ -10,5 +10,5 @@ public class Tile {
     public int textureIndex;
     public float x;
     public float y;
-    public float z;
+    public int z;
 }

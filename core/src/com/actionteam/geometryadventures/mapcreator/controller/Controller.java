@@ -16,12 +16,15 @@ public class Controller extends Stage {
     private Resources resources;
     private UIController uiController;
     private WorldController worldController;
+    private TextureBoxController textureBoxController;
 
     public Controller(Resources resources) {
         this.resources = resources;
         resources.init(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        uiController = new UIController(resources);
-        worldController = new WorldController();
+        worldController = new WorldController(this);
+        textureBoxController = new TextureBoxController(this);
+        uiController = new UIController(resources, this, textureBoxController);
+
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(uiController);
         inputMultiplexer.addProcessor(new GestureDetector(worldController));
@@ -40,5 +43,11 @@ public class Controller extends Stage {
                 setUnitsPerPixel(resources.updateUiUnitsPerPixel(width, height));
         uiController.resize(width, height);
         worldController.resize(width, height);
+    }
+
+    void fireEvent(int eventCode, Object message) {
+        uiController.handle(eventCode, message);
+        worldController.handle(eventCode, message);
+        textureBoxController.handle(eventCode, message);
     }
 }

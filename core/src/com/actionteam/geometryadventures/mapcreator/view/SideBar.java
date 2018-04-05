@@ -56,4 +56,9 @@ public class SideBar extends Table {
         }
         selectedTab = tab;
     }
+
+    public void setTextureBoxListener(TextureBoxListener textureBoxListener) {
+        floorsTab.setTextureBoxListener(textureBoxListener);
+        wallsTab.setTextureBoxListener(textureBoxListener);
+    }
 }
