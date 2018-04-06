@@ -42,7 +42,7 @@ public class Resources {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        textureAtlas = new TextureAtlas(Gdx.files.internal("textureatlas/textures.atlas"));
+        textureAtlas = new TextureAtlas(Gdx.files.internal("textureatlas/textureatlas.atlas"));
         shapeRenderer = new ShapeRenderer();
     }
 

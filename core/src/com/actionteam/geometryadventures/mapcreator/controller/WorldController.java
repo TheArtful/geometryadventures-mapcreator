@@ -38,7 +38,7 @@ public class WorldController implements GestureDetector.GestureListener {
 
     public WorldController(Controller controller) {
         map = new Map();
-        world = new World(new TextureAtlas(Gdx.files.internal("textureatlas/textures.atlas")),
+        world = new World(new TextureAtlas(Gdx.files.internal("textureatlas/textureatlas.atlas")),
                 map);
         this.controller = controller;
         mode = DRAWING_MODE;
@@ -62,11 +62,14 @@ public class WorldController implements GestureDetector.GestureListener {
                     Vector2 pos = world.getViewport().unproject(new Vector2(x, y));
                     x = (int) Math.floor(pos.x);
                     y = (int) Math.floor(pos.y);
-                    previewMode = PATTERN_PREVIEW;
                     px1 = (int) x;
                     py1 = (int) y;
                     px2 = px1;
                     py2 = py1;
+                    if (selectedIndex == TextureBox.ALL && selectedTile.type.equals(TileType.WALL))
+                        previewMode = NO_PREVIEW;
+                    else
+                        previewMode = PATTERN_PREVIEW;
                 }
                 break;
             case DELETE_MODE:
@@ -93,8 +96,14 @@ public class WorldController implements GestureDetector.GestureListener {
             case DRAWING_MODE:
                 if (selectedTile != null) {
                     Vector2 pos = world.getViewport().unproject(new Vector2(x, y));
-                    px2 = (int) Math.floor(pos.x);
-                    py2 = (int) Math.floor(pos.y);
+                    pos.x = (int) Math.floor(pos.x);
+                    pos.y = (int) Math.floor(pos.y);
+                    if (selectedIndex == TextureBox.ALL && selectedTile.type.equals(TileType.WALL)) {
+                        if(px2 != pos.x || py2 != pos.y)
+                            addWall(pos.x, pos.y);
+                    }
+                    px2 = pos.x;
+                    py2 = pos.y;
                 }
                 break;
             case DELETE_MODE:
@@ -123,7 +132,10 @@ public class WorldController implements GestureDetector.GestureListener {
                 py1 = (int) y;
                 px2 = px1;
                 py2 = py1;
-                applyPreviewed();
+                if (selectedTile.type.equals(TileType.WALL) && selectedIndex == TextureBox.ALL) {
+                    addWall(px1, py1);
+                } else
+                    applyPreviewed();
                 break;
             case DELETE_MODE:
                 pos = world.getViewport().unproject(new Vector2(x, y));
@@ -154,9 +166,11 @@ public class WorldController implements GestureDetector.GestureListener {
         startPan = true;
         switch (mode) {
             case DRAWING_MODE:
-                previewMode = NO_PREVIEW;
-                if (selectedTile != null && selectedIndex != TextureBox.NOTHING) {
-                    applyPreviewed();
+                if(previewMode == PATTERN_PREVIEW) {
+                    if (selectedTile != null && selectedIndex != TextureBox.NOTHING) {
+                        applyPreviewed();
+                    }
+                    previewMode = NO_PREVIEW;
                 }
                 break;
             case DELETE_MODE:
@@ -198,7 +212,7 @@ public class WorldController implements GestureDetector.GestureListener {
             case MyEvents.TEXTURE_CHOSEN:
                 selectedTile = (TileType) (((Object[]) message)[0]);
                 selectedIndex = (Integer) (((Object[]) message)[1]);
-                if(selectedTile == null || selectedIndex == TextureBox.NOTHING){
+                if (selectedTile == null || selectedIndex == TextureBox.NOTHING) {
                     mode = FREE_MODE;
                     controller.fireEvent(MyEvents.SET_FREE_MODE, null);
                 } else {
@@ -246,6 +260,54 @@ public class WorldController implements GestureDetector.GestureListener {
                     map.removeTile(tile);
                 }
             }
+        }
+    }
+
+    private void addWall(float x, float y) {
+        Tile tile = new Tile();
+        tile.type = selectedTile.type;
+        tile.textureName = selectedTile.textureName;
+        tile.x = x;
+        tile.y = y;
+        tile.z = selectedTile.z;
+        map.addTile(tile);
+        setAppropriateWall(tile, true);
+    }
+
+    private void setAppropriateWall(Tile tile, boolean recursive) {
+        if (tile == null) {
+            return;
+        }
+        Tile left = map.searchTilesFiltered(tile.x + 1, tile.y, TileType.WALL);
+        Tile right = map.searchTilesFiltered(tile.x - 1, tile.y, TileType.WALL);
+        Tile top = map.searchTilesFiltered(tile.x, tile.y + 1, TileType.WALL);
+        Tile bottom = map.searchTilesFiltered(tile.x, tile.y - 1, TileType.WALL);
+        if (bottom != null && right != null) {
+            tile.textureIndex = TileType.W_BOTTOM_RIGHT;
+        } else if (right != null && left != null) {
+            tile.textureIndex = TileType.W_LEFT_RIGHT;
+        } else if (left != null && bottom != null) {
+            tile.textureIndex = TileType.W_BOTTOM_LEFT;
+        } else if (top != null && bottom != null) {
+            tile.textureIndex = TileType.W_TOP_BOTTOM;
+        } else if (top != null && left != null) {
+            tile.textureIndex = TileType.W_TOP_LEFT;
+        } else if (top != null && right != null) {
+            tile.textureIndex = TileType.W_TOP_RIGHT;
+        } else if (right != null && left == null) {
+            tile.textureIndex = TileType.W_RIGHT;
+        } else if (bottom != null && top == null) {
+            tile.textureIndex = TileType.W_BOTTOM;
+        } else if (top != null && bottom == null) {
+            tile.textureIndex = TileType.W_TOP;
+        } else if (left != null && right == null) {
+            tile.textureIndex = TileType.W_LEFT;
+        }
+        if (recursive) {
+            setAppropriateWall(bottom, false);
+            setAppropriateWall(left, false);
+            setAppropriateWall(top, false);
+            setAppropriateWall(right, false);
         }
     }
 
