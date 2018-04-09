@@ -47,6 +47,18 @@ public class UIController extends Stage {
                 controller.fireEvent(MyEvents.FREE_MODE, null);
             }
         });
+        ui.getTopBar().getSaveBtn().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.fireEvent(MyEvents.SAVE, null);
+            }
+        });
+        ui.getTopBar().getLoadBtn().addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.fireEvent(MyEvents.LOAD, null);
+            }
+        });
     }
 
     public void resize(int width, int height) {

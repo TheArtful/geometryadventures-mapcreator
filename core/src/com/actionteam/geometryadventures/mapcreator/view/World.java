@@ -84,7 +84,8 @@ public class World {
         drawGrid();
         batch.begin();
         batch.setProjectionMatrix(viewport.getCamera().combined);
-        for (Tile tile : map.getTiles()) {
+        for (int i = map.getTiles().size() - 1; i >= 0; i--) {
+            Tile tile = map.getTiles().get(i);
             batch.draw(textureAtlas.findRegion(tile.textureName, tile.textureIndex), tile.x,
                     tile.y, 1, 1);
         }

@@ -43,7 +43,7 @@ public class TextureBox extends Table {
         this.width = width;
         this.selectedTile = -1;
         center();
-        final float tileLength = width / tileType.xTiles;
+        final float tileLength = (width / tileType.xTiles > 160)? 160 : width / tileType.xTiles;
         tiles = new Image[tileType.numberOfTiles];
         final TextureBox t = this;
         for (int i = 0; i < tileType.numberOfTiles; i++) {

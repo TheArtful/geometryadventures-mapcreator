@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by theartful on 4/1/18.
@@ -12,7 +13,7 @@ import java.util.Comparator;
 
 public class Map {
 
-    private ArrayList<Tile> tiles;
+    private List<Tile> tiles;
 
     public Map() {
         tiles = new ArrayList<Tile>();
@@ -31,7 +32,7 @@ public class Map {
         Collections.sort(tiles, new Comparator<Tile>() {
             @Override
             public int compare(Tile tile, Tile t1) {
-                return (tile.z - t1.z < 0) ? -1 : 1;
+                return (tile.z - t1.z < 0) ? 1 : -1;
             }
         });
     }
@@ -52,11 +53,12 @@ public class Map {
         return null;
     }
 
-    public ArrayList<Tile> getTiles() {
+    public List<Tile> getTiles() {
         return tiles;
     }
 
     public void removeTile(Tile tile) {
+        if(tile == null) return;
         tiles.remove(tile);
         Gdx.app.log("Removing tile", "x: " + tile.x + ", y : " + tile.y);
     }

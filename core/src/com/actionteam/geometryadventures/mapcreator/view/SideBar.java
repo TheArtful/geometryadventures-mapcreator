@@ -17,6 +17,8 @@ public class SideBar extends Table {
     private Resources resources;
     private Tab floorsTab;
     private Tab wallsTab;
+    private Tab miscTab;
+    private Tab enemyTab;
     private Tab selectedTab;
 
     public SideBar(Resources resources) {
@@ -25,6 +27,8 @@ public class SideBar extends Table {
         initCategoryBar();
         floorsTab = new Tab(resources.floors, resources);
         wallsTab = new Tab(resources.walls, resources);
+        miscTab = new Tab(resources.misc, resources);
+        enemyTab = new Tab(resources.enemies, resources);
         categoryChosen(floorsTab);
     }
 
@@ -44,6 +48,18 @@ public class SideBar extends Table {
                 categoryChosen(wallsTab);
             }
         });
+        categoryBar.getMiscBtn().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                categoryChosen(miscTab);
+            }
+        });
+        categoryBar.getEnemiesBtn().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                categoryChosen(enemyTab);
+            }
+        });
     }
 
     public void categoryChosen(Tab tab) {
@@ -60,5 +76,7 @@ public class SideBar extends Table {
     public void setTextureBoxListener(TextureBoxListener textureBoxListener) {
         floorsTab.setTextureBoxListener(textureBoxListener);
         wallsTab.setTextureBoxListener(textureBoxListener);
+        miscTab.setTextureBoxListener(textureBoxListener);
+        enemyTab.setTextureBoxListener(textureBoxListener);
     }
 }

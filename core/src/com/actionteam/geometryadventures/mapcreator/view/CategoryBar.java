@@ -1,6 +1,8 @@
 package com.actionteam.geometryadventures.mapcreator.view;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -26,12 +28,13 @@ public class CategoryBar extends ScrollPane {
         enemiesBtn = new TextButton("Enemies", skin, "toggle");
         miscBtn = new TextButton("Misc", skin, "toggle");
         table.setFillParent(true);
+        table.add(new Label("", skin)).width(200);
         table.add(floorsBtn).pad(2);
         table.add(wallsBtn).pad(2);
         table.add(enemiesBtn).pad(2);
         table.add(miscBtn).pad(2);
 
-        buttonGroup = new ButtonGroup<TextButton>(floorsBtn, wallsBtn, enemiesBtn, miscBtn);
+        buttonGroup = new ButtonGroup(floorsBtn, wallsBtn, enemiesBtn, miscBtn);
         buttonGroup.setMaxCheckCount(1);
         buttonGroup.setMinCheckCount(1);
         buttonGroup.setChecked("Floors");
