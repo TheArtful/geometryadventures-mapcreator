@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
  */
 
 public class MyScrollPane extends ScrollPane {
+
     public MyScrollPane(Actor widget, Skin skin) {
         super(widget, skin);
     }

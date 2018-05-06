@@ -1,5 +1,7 @@
 package com.actionteam.geometryadventures.mapcreator.view;
 
+import com.actionteam.geometryadventures.mapcreator.Clock;
+import com.actionteam.geometryadventures.mapcreator.model.LightTile;
 import com.actionteam.geometryadventures.mapcreator.model.Map;
 import com.actionteam.geometryadventures.mapcreator.model.Tile;
 import com.actionteam.geometryadventures.mapcreator.model.TileType;
@@ -8,6 +10,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -28,6 +32,15 @@ public class World {
     private int height;
     private Color gridColor;
     private Map map;
+    private ShaderProgram shader;
+    private int ambientLightLocation;
+    private int ambientIntensityLocation;
+    private int ulightPos;
+    private int ulightColor;
+    private int uradius;
+    private int ulightSources;
+    private static final int MAX_NUMBER = 10;
+
 
     public World(ShapeRenderer shapeRenderer, float unitsPerPixel, TextureAtlas textureAtlas, Map map) {
         this.shapeRenderer = shapeRenderer;
@@ -39,6 +52,15 @@ public class World {
 
         gridColor = Color.DARK_GRAY;
         batch = new SpriteBatch();
+        shader = new ShaderProgram(Gdx.files.internal("vertex.glsl"),
+                Gdx.files.internal("fragment.glsl"));
+        ambientLightLocation = shader.getUniformLocation("u_ambientLight");
+        ambientIntensityLocation = shader.getUniformLocation("u_ambientIntensity");
+
+        ulightPos = shader.getUniformLocation("u_lightPos[" + 0 + "]");
+        ulightColor = shader.getUniformLocation("u_lightColor[" + 0 + "]");
+        uradius = shader.getUniformLocation("u_radius[" + 0 + "]");
+        ulightSources = shader.getUniformLocation("u_lightSources");
     }
 
     public World(TextureAtlas textureAtlas, Map map) {
@@ -80,16 +102,41 @@ public class World {
     }
 
     public void render(float dt) {
+        if(map.newLight) {updateLights(); map.newLight = false;}
         viewport.apply();
         drawGrid();
         batch.begin();
+        batch.setShader(shader);
         batch.setProjectionMatrix(viewport.getCamera().combined);
         for (int i = map.getTiles().size() - 1; i >= 0; i--) {
             Tile tile = map.getTiles().get(i);
-            batch.draw(textureAtlas.findRegion(tile.textureName, tile.textureIndex), tile.x,
+            int textureIndex = tile.textureIndex;
+            if (tile.isAnimated) {
+                textureIndex = (int) (Clock.clock / tile.speed) % tile.frames;
+            }
+            batch.draw(textureAtlas.findRegion(tile.textureName, textureIndex), tile.x,
                     tile.y, 1, 1);
         }
         batch.end();
+    }
+
+    private void updateLights() {
+        shader.begin();
+        shader.setUniformf(ambientLightLocation, map.getConfig().ambientLight);
+        shader.setUniformf(ambientIntensityLocation, map.getConfig().ambientIntensity);
+        int i = 0;
+        for(Tile tile : map.getTiles()) {
+            if(!tile.tileType.equals(TileType.LIGHT)) continue;
+            LightTile e = (LightTile) tile;
+            shader.setUniformf(ulightPos + i, e.x + 0.5f, e.y + 0.5f);
+            shader.setUniformf(ulightColor + i, e.lightColor.x * e.lightIntensity
+                    , e.lightColor.y * e.lightIntensity, e.lightColor.z * e.lightIntensity);
+            shader.setUniformf(uradius + i, e.innerRadius, e.outerRadius);
+            i++;
+        }
+        shader.setUniformi(ulightSources, i);
+        shader.end();
+
     }
 
     public void renderPreviewPattern(int x1, int y1, int x2, int y2, int selectedIndex,

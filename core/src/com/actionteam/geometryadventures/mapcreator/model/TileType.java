@@ -52,7 +52,11 @@ public class TileType {
     public static final String WALL = "wall";
     public static final String FLOOR = "floor";
     public static final String ENEMY = "enemy";
+    public static final String PLAYER = "player";
     public static final String MISC = "misc";
+    public static final String PORTAL = "portal";
+    public static final String DOOR = "door";
+    public static final String LIGHT = "light";
 
     public String type;
     public String textureName;
@@ -61,6 +65,9 @@ public class TileType {
     public boolean isPattern;
     public int z;
     public boolean collidable;
+    public boolean isAnimated;
+    public int frames;
+    public float speed;
 
     public TileType(String type, String textureName, int xTiles, int numberOfTiles, boolean isPattern,
                     int z, boolean collidable) {
@@ -72,4 +79,5 @@ public class TileType {
         this.z = z;
         this.collidable = collidable;
     }
+
 }

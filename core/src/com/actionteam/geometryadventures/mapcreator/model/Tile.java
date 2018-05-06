@@ -5,10 +5,14 @@ package com.actionteam.geometryadventures.mapcreator.model;
  */
 
 public class Tile {
-    public String type;
+    public String tileType;
     public String textureName;
     public int textureIndex;
+    public boolean collidable;
     public float x;
     public float y;
     public int z;
+    public boolean isAnimated;
+    public int frames;
+    public float speed;
 }

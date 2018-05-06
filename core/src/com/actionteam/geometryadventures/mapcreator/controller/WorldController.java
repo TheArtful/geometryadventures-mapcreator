@@ -1,15 +1,20 @@
 package com.actionteam.geometryadventures.mapcreator.controller;
 
+import com.actionteam.geometryadventures.mapcreator.Resources;
+import com.actionteam.geometryadventures.mapcreator.RuntimeTypeAdapterFactory;
+import com.actionteam.geometryadventures.mapcreator.model.EnemyTile;
+import com.actionteam.geometryadventures.mapcreator.model.LightTile;
 import com.actionteam.geometryadventures.mapcreator.model.Map;
+import com.actionteam.geometryadventures.mapcreator.model.PlayerTile;
+import com.actionteam.geometryadventures.mapcreator.model.PortalTile;
 import com.actionteam.geometryadventures.mapcreator.model.Tile;
 import com.actionteam.geometryadventures.mapcreator.model.TileType;
 import com.actionteam.geometryadventures.mapcreator.view.TextureBox;
 import com.actionteam.geometryadventures.mapcreator.view.World;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,9 +27,10 @@ import java.io.PrintWriter;
 
 public class WorldController implements GestureDetector.GestureListener {
 
-    private static final int FREE_MODE = 0;
-    private static final int DRAWING_MODE = 1;
-    private static final int DELETE_MODE = 2;
+    private static final int FREE_MODE = MyEvents.FREE_MODE;
+    private static final int DRAWING_MODE = MyEvents.DRAW_MODE;
+    private static final int DELETE_MODE = MyEvents.REMOVE_MODE;
+    private static final int SELECT_MODE = MyEvents.SELECT_MODE;
 
     private static final int NO_PREVIEW = 0;
     private static final int PATTERN_PREVIEW = 1;
@@ -41,11 +47,13 @@ public class WorldController implements GestureDetector.GestureListener {
     private float px1, px2, py1, py2;
     private int previewMode;
     private Map map;
+    private Resources resources;
 
-    public WorldController(Controller controller) {
+    public WorldController(Controller controller, Resources resources) {
         map = new Map();
-        world = new World(new TextureAtlas(Gdx.files.internal("textureatlas/textureatlas.atlas")),
-                map);
+        resources.map = map;
+        this.resources = resources;
+        world = new World(resources.textureAtlas, map);
         this.controller = controller;
         mode = DRAWING_MODE;
         startPan = true;
@@ -131,7 +139,7 @@ public class WorldController implements GestureDetector.GestureListener {
         Vector2 pos;
         switch (mode) {
             case DRAWING_MODE:
-                if (selectedTile == null || selectedIndex < TextureBox.NOTHING) return true;
+                if (selectedTile == null || selectedIndex == TextureBox.NOTHING) return true;
                 pos = world.getViewport().unproject(new Vector2(x, y));
                 x = (int) Math.floor(pos.x);
                 y = (int) Math.floor(pos.y);
@@ -153,6 +161,14 @@ public class WorldController implements GestureDetector.GestureListener {
                 px2 = px1;
                 py2 = py1;
                 applyDelete();
+                break;
+            case SELECT_MODE:
+                pos = world.getViewport().unproject(new Vector2(x, y));
+                x = (int) Math.floor(pos.x);
+                y = (int) Math.floor(pos.y);
+                Tile tile = world.getMap().searchTiles(x, y);
+                Object[] mes = {tile, (int) x, (int) y};
+                controller.fireEvent(MyEvents.SHOW_PROPERTIES, mes);
                 break;
         }
         return false;
@@ -236,6 +252,9 @@ public class WorldController implements GestureDetector.GestureListener {
             case MyEvents.FREE_MODE:
                 mode = FREE_MODE;
                 break;
+            case MyEvents.SELECT_MODE:
+                mode = SELECT_MODE;
+                break;
             case MyEvents.SAVE:
                 saveMap();
                 break;
@@ -254,13 +273,27 @@ public class WorldController implements GestureDetector.GestureListener {
                             Math.abs(((int) y) % (selectedTile.numberOfTiles / selectedTile.xTiles));
                 } else
                     index = selectedIndex;
-                Tile tile = new Tile();
-                tile.type = selectedTile.type;
+                Tile tile;
+                if (selectedTile.type.equals(TileType.PORTAL))
+                    tile = new PortalTile();
+                else if(selectedTile.type.equals(TileType.ENEMY))
+                    tile = new EnemyTile();
+                else if(selectedTile.type.equals(TileType.PLAYER))
+                    tile = new PlayerTile();
+                else if(selectedTile.type.equals(TileType.LIGHT))
+                    tile = new LightTile();
+                else
+                    tile = new Tile();
+                tile.tileType = selectedTile.type;
                 tile.x = x;
                 tile.y = y;
                 tile.z = selectedTile.z;
+                tile.collidable = selectedTile.collidable;
                 tile.textureName = selectedTile.textureName;
                 tile.textureIndex = index;
+                tile.isAnimated = selectedTile.isAnimated;
+                tile.frames = selectedTile.frames;
+                tile.speed = selectedTile.speed != 0? selectedTile.speed : 1;
                 map.addTile(tile);
             }
         }
@@ -276,143 +309,23 @@ public class WorldController implements GestureDetector.GestureListener {
 
     private void addWall(float x, float y) {
         Tile tile = new Tile();
-        tile.type = selectedTile.type;
+        tile.tileType = selectedTile.type;
         tile.textureName = selectedTile.textureName;
+        tile.textureIndex = selectedIndex;
         tile.x = x;
         tile.y = y;
         tile.z = selectedTile.z;
+        tile.collidable = selectedTile.collidable;
         map.addTile(tile);
-        setAppropriateWall(tile, true);
-    }
-
-    private void setAppropriateWall(Tile tile, boolean recursive) {
-        if (tile == null) {
-            return;
-        }
-        Tile left = map.searchTilesFiltered(tile.x - 1, tile.y, TileType.WALL);
-        Tile right = map.searchTilesFiltered(tile.x + 1, tile.y, TileType.WALL);
-        Tile top = map.searchTilesFiltered(tile.x, tile.y + 1, TileType.WALL);
-        Tile bottom = map.searchTilesFiltered(tile.x, tile.y - 1, TileType.WALL);
-        Tile topLeft = map.searchTilesFiltered(tile.x - 1, tile.y + 1, TileType.WALL);
-        Tile topRight = map.searchTilesFiltered(tile.x + 1, tile.y + 1, TileType.WALL);
-        Tile bottomLeft = map.searchTilesFiltered(tile.x - 1, tile.y - 1, TileType.WALL);
-        Tile bottomRight = map.searchTilesFiltered(tile.x + 1, tile.y - 1, TileType.WALL);
-
-        if (bottom == null && left == null && right == null && top == null && topLeft == null &&
-                topRight == null && bottomLeft == null && bottomRight == null) {
-            tile.textureIndex = TileType.W_NOTHING;
-        } else if (bottom != null && left == null && right != null && top == null &&
-                bottomRight == null) {
-            tile.textureIndex = TileType.W_BOTTOM_RIGHT;
-        } else if (bottom != null && left == null && right != null && top == null &&
-                bottomRight != null) {
-            tile.textureIndex = TileType.W_RIGHT_BOTTOM_BOTTOMRIGHT;
-        } else if (bottom == null && left != null && right != null && top == null) {
-            tile.textureIndex = TileType.W_LEFT_RIGHT;
-        } else if (bottom != null && left != null && right == null && top == null &&
-                bottomLeft == null) {
-            tile.textureIndex = TileType.W_BOTTOM_LEFT;
-        } else if (bottom != null && left != null && right == null && top == null &&
-                bottomLeft != null) {
-            tile.textureIndex = TileType.W_LEFT_BOTTOM_BOTTOMLEFT;
-        } else if (top != null && bottom != null && right == null && left == null) {
-            tile.textureIndex = TileType.W_TOP_BOTTOM;
-        } else if (top != null && left != null && right == null && bottom == null
-                && topLeft == null) {
-            tile.textureIndex = TileType.W_TOP_LEFT;
-        } else if (top != null && left != null && right == null && bottom == null
-                && topLeft != null) {
-            tile.textureIndex = TileType.W_LEFT_TOP_TOPLEFT;
-        } else if (top != null && right != null && left == null && bottom == null
-                && topRight == null) {
-            tile.textureIndex = TileType.W_TOP_RIGHT;
-        } else if (top != null && right != null && left == null && bottom == null
-                && topRight != null) {
-            tile.textureIndex = TileType.W_RIGHT_TOP_TOPRIGHT;
-        } else if (right != null && left == null && top == null && bottom == null) {
-            tile.textureIndex = TileType.W_RIGHT;
-        } else if (bottom != null && top == null && right == null && left == null) {
-            tile.textureIndex = TileType.W_BOTTOM;
-        } else if (top != null && bottom == null && right == null && left == null) {
-            tile.textureIndex = TileType.W_TOP;
-        } else if (left != null && right == null && top == null && right == null) {
-            tile.textureIndex = TileType.W_LEFT;
-        } else if (right != null && left != null && bottom != null && bottomRight != null &&
-                bottomLeft != null && top == null) {
-            tile.textureIndex = TileType.W_RIGHT_LEFT_BOTTOM_BOTTOMRIGHT_BOTTOMLEFT;
-        } else if (right != null && left != null && bottom != null && bottomRight != null &&
-                bottomLeft == null && top == null) {
-            tile.textureIndex = TileType.W_LEFT_RIGHT_BOTTOM_BOTTOMRIGHT;
-        } else if (right != null && left != null && bottom != null && bottomRight == null &&
-                bottomLeft == null && top == null) {
-            tile.textureIndex = TileType.W_BOTTOM_RIGHT_LEFT;
-        } else if (top != null && bottom != null && right != null && topRight == null &&
-                bottomRight == null) {
-            tile.textureIndex = TileType.W_TOP_BOTTOM_RIGHT;
-        } else if (top != null && bottom != null && right != null && topRight != null &&
-                bottomRight == null && left == null) {
-            tile.textureIndex = TileType.W_TOP_BOTTOM_RIGHT_TOPRIGHT;
-        } else if (top != null && bottom != null && right != null && left == null &&
-                topRight == null && bottomRight != null) {
-            tile.textureIndex = TileType.W_TOP_BOTTOM_RIGHT_RIGHTBOTTOM;
-        } else if (top != null && bottom != null && right != null && left == null &&
-                topRight != null && bottomRight != null) {
-            tile.textureIndex = TileType.W_RIGHT_TOP_BOTTOM_TOPRIGHT_BOTTOMRIGHT;
-        } else if (top != null && right != null && bottom == null && left != null &&
-                topLeft == null && topRight == null) {
-            tile.textureIndex = TileType.W_TOP_RIGHT_LEFT;
-        } else if (top != null && right != null && left != null && bottom == null &&
-                topLeft != null && topRight == null) {
-            tile.textureIndex = TileType.W_TOP_RIGHT_LEFT_TOPLEFT;
-        } else if (top != null && right != null && left != null && topLeft == null &&
-                topRight != null && bottom == null) {
-            tile.textureIndex = TileType.W_TOP_RIGHT_LEFT_TOPRIGHT;
-        } else if (top != null && bottom != null && left != null && topLeft == null &&
-                bottomLeft == null && right == null) {
-            tile.textureIndex = TileType.W_TOP_BOTTOM_LEFT;
-        } else if (top != null && bottom != null && left != null && topLeft == null &&
-                bottomLeft != null && right == null) {
-            tile.textureIndex = TileType.W_TOP_BOTTOM_LEFT_LEFTBOTTOM;
-        } else if (top != null && bottom != null && left != null && topLeft != null &&
-                bottomLeft == null && right == null) {
-            tile.textureIndex = TileType.W_TOP_BOTTOM_LEFT_LEFTTOP;
-        } else if (top != null && right != null && left != null && bottom == null && topLeft != null
-                && topRight != null) {
-            tile.textureIndex = TileType.W_TOP_RIGHT_LEFT_TOPRIGHT_TOPLEFT;
-        } else if (top != null && left != null && bottom != null && right != null &&
-                topLeft != null && topRight != null && bottomLeft != null && bottomRight != null) {
-            tile.textureIndex = TileType.W_ALL;
-        } else if (top != null && left != null && bottom != null && topLeft != null &&
-                bottomLeft != null && right == null) {
-            tile.textureIndex = TileType.W_LEFT_TOP_BOTTOM_TOPLEFT_BOTTOMLEFT;
-        } else if (top != null && left != null && right != null && bottom != null &&
-                topLeft != null && topRight != null && bottomLeft == null && bottomRight != null) {
-            tile.textureIndex = TileType.W_ALL_EXCEPT_BOTTOMLEFT;
-        } else if (top != null && left != null && right != null && bottom != null &&
-                topLeft != null && topRight != null && bottomLeft != null && bottomRight == null) {
-            tile.textureIndex = TileType.W_ALL_EXCEPT_BOTTOMRIGHT;
-        } else if (top != null && left != null && right != null && bottom != null &&
-                topLeft == null && topRight != null && bottomLeft != null && bottomRight != null) {
-            tile.textureIndex = TileType.W_ALL_EXCEPT_TOPLEFT;
-        } else if (top != null && left != null && right != null && bottom != null &&
-                topLeft != null && topRight == null && bottomLeft != null && bottomRight != null) {
-            tile.textureIndex = TileType.W_ALL_EXCEPT_TOPLRIGHT;
-        }
-
-        if (recursive) {
-            setAppropriateWall(bottom, false);
-            setAppropriateWall(left, false);
-            setAppropriateWall(top, false);
-            setAppropriateWall(right, false);
-            setAppropriateWall(topLeft, false);
-            setAppropriateWall(topRight, false);
-            setAppropriateWall(bottomLeft, false);
-            setAppropriateWall(bottomRight, false);
-        }
+        // setAppropriateWall(tile, true);
     }
 
     private void saveMap() {
-        Gson gson = new Gson();
+        RuntimeTypeAdapterFactory<Tile> rtaf = RuntimeTypeAdapterFactory.of(Tile.class, "type").
+                registerSubtype(Tile.class).registerSubtype(PortalTile.class).registerSubtype(EnemyTile.class)
+                .registerSubtype(PlayerTile.class).registerSubtype(LightTile.class);
+
+        Gson gson = new GsonBuilder().registerTypeAdapterFactory(rtaf).create();
         String json = gson.toJson(map);
         PrintWriter writer = null;
         try {
@@ -428,13 +341,18 @@ public class WorldController implements GestureDetector.GestureListener {
         try {
             File file = new File("map");
             if (!file.exists()) return;
-            Gson gson = new Gson();
+
+            RuntimeTypeAdapterFactory<Tile> rtaf = RuntimeTypeAdapterFactory.of(Tile.class, "type").
+                    registerSubtype(Tile.class).registerSubtype(PortalTile.class).
+                    registerSubtype(LightTile.class);
+
+            Gson gson = new GsonBuilder().registerTypeAdapterFactory(rtaf).create();
             map = gson.fromJson(new FileReader(file), Map.class);
+            resources.map = map;
+            map.newLight = true;
             world.setMap(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
 }

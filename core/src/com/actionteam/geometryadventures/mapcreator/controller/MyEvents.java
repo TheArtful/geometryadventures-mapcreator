@@ -13,4 +13,6 @@ class MyEvents {
     static final int SET_DRAW_MODE = 5;
     static final int SAVE = 6;
     static final int LOAD = 7;
+    static final int SELECT_MODE = 8;
+    static final int SHOW_PROPERTIES = 9;
 }

@@ -18,15 +18,19 @@ public class TopBar extends Table {
     private TextButton deleteBtn;
     private TextButton saveBtn;
     private TextButton loadBtn;
+    private TextButton selectBtn;
+    private TextButton mapConfigBtn;
     private ButtonGroup<TextButton> buttonGroup;
 
     public TopBar(Resources resources) {
         drawBtn = new TextButton("Draw", resources.skin, "toggle");
         moveBtn = new TextButton("Move", resources.skin, "toggle");
         deleteBtn = new TextButton("Delete", resources.skin, "toggle");
+        selectBtn = new TextButton("Select", resources.skin, "toggle");
         saveBtn = new TextButton("Save", resources.skin);
         loadBtn = new TextButton("Load", resources.skin);
-        buttonGroup = new ButtonGroup<TextButton>(drawBtn, moveBtn, deleteBtn);
+        mapConfigBtn = new TextButton("Map Config", resources.skin);
+        buttonGroup = new ButtonGroup<TextButton>(drawBtn, moveBtn, deleteBtn, selectBtn);
         buttonGroup.setMinCheckCount(1);
         buttonGroup.setMaxCheckCount(1);
         buttonGroup.setChecked("Draw");
@@ -35,6 +39,8 @@ public class TopBar extends Table {
         add(drawBtn).pad(5);
         add(moveBtn).pad(5);
         add(deleteBtn).pad(5);
+        add(selectBtn).pad(5);
+        add(mapConfigBtn).pad(5);
         add(saveBtn).pad(5).align(Align.right);
         add(loadBtn).pad(5).align(Align.right);
     }
@@ -55,6 +61,10 @@ public class TopBar extends Table {
         return saveBtn;
     }
 
+    public TextButton getSelectBtn() {
+        return selectBtn;
+    }
+
     public TextButton getLoadBtn() {
         return loadBtn;
     }
@@ -62,4 +72,9 @@ public class TopBar extends Table {
     public ButtonGroup getButtonGroup() {
         return buttonGroup;
     }
+
+    public TextButton getMapConfigBtn() {
+        return mapConfigBtn;
+    }
+
 }

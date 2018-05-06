@@ -1,7 +1,12 @@
 package com.actionteam.geometryadventures.mapcreator.controller;
 
 import com.actionteam.geometryadventures.mapcreator.Resources;
+import com.actionteam.geometryadventures.mapcreator.model.Tile;
+import com.actionteam.geometryadventures.mapcreator.view.Properties;
+import com.actionteam.geometryadventures.mapcreator.view.SideBar;
+import com.actionteam.geometryadventures.mapcreator.view.TopBar;
 import com.actionteam.geometryadventures.mapcreator.view.UI;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -17,6 +22,9 @@ public class UIController extends Stage {
     private Resources resources;
     private ScreenViewport uiViewport;
     private Controller controller;
+    private TopBar topBar;
+    private SideBar sideBar;
+    private Properties properties;
 
     public UIController(Resources resources, final Controller controller, TextureBoxController textureBoxController) {
         super(new ScreenViewport());
@@ -26,42 +34,60 @@ public class UIController extends Stage {
         uiViewport.update(resources.screenWidth, resources.screenHeight);
         ui = new UI(resources);
         addActor(ui);
+        topBar = ui.getTopBar();
+        sideBar = ui.getSideBar();
+        properties = ui.getProperties();
         ui.setFillParent(true);
-        ui.getSideBar().setTextureBoxListener(textureBoxController);
+        sideBar.setTextureBoxListener(textureBoxController);
         this.controller = controller;
-        ui.getTopBar().getDrawBtn().addListener(new ClickListener() {
+        topBar.getDrawBtn().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.fireEvent(MyEvents.DRAW_MODE, null);
             }
         });
-        ui.getTopBar().getDeleteBtn().addListener(new ClickListener() {
+        topBar.getDeleteBtn().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.fireEvent(MyEvents.REMOVE_MODE, null);
             }
         });
-        ui.getTopBar().getMoveBtn().addListener(new ClickListener() {
+        topBar.getMoveBtn().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.fireEvent(MyEvents.FREE_MODE, null);
             }
         });
-        ui.getTopBar().getSaveBtn().addListener(new ClickListener() {
+        topBar.getSaveBtn().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.fireEvent(MyEvents.SAVE, null);
             }
         });
-        ui.getTopBar().getLoadBtn().addListener(new ClickListener() {
+        topBar.getSelectBtn().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.fireEvent(MyEvents.SELECT_MODE, null);
+            }
+        });
+
+        topBar.getLoadBtn().addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 controller.fireEvent(MyEvents.LOAD, null);
             }
         });
+
+        topBar.getMapConfigBtn().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                controller.fireEvent(MyEvents.SHOW_PROPERTIES, new Object[]{null, 0, 0});
+            }
+        });
+
     }
 
-    public void resize(int width, int height) {
+    void resize(int width, int height) {
         getViewport().update(width, height, true);
         ui.update(width, height);
     }
@@ -71,10 +97,26 @@ public class UIController extends Stage {
             case MyEvents.SET_FREE_MODE:
                 ui.getTopBar().getButtonGroup().setChecked(ui.getTopBar().getMoveBtn().getText().
                         toString());
+                ui.hideProperties();
                 break;
             case MyEvents.SET_DRAW_MODE:
                 ui.getTopBar().getButtonGroup().setChecked(ui.getTopBar().getDrawBtn().getText().
                         toString());
+                ui.hideProperties();
+                break;
+            case MyEvents.SHOW_PROPERTIES:
+                Gdx.app.log("UIController", "showing properties");
+                Object[] mes = (Object[]) message;
+                ui.showProperties((Tile) mes[0], (Integer) mes[1], (Integer) mes[2]);
+                break;
+            case MyEvents.DRAW_MODE:
+                ui.hideProperties();
+                break;
+            case MyEvents.REMOVE_MODE:
+                ui.hideProperties();
+                break;
+            case MyEvents.FREE_MODE:
+                ui.hideProperties();
                 break;
         }
     }

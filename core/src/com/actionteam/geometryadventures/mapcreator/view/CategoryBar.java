@@ -17,7 +17,11 @@ public class CategoryBar extends ScrollPane {
     private TextButton wallsBtn;
     private TextButton floorsBtn;
     private TextButton enemiesBtn;
+    private TextButton playerBtn;
     private TextButton miscBtn;
+    private TextButton portalsBtn;
+    private TextButton doorsBtn;
+    private TextButton lightBtn;
     private ButtonGroup buttonGroup;
 
     public CategoryBar(Skin skin) {
@@ -26,33 +30,50 @@ public class CategoryBar extends ScrollPane {
         wallsBtn = new TextButton("Walls", skin, "toggle");
         floorsBtn = new TextButton("Floors", skin, "toggle");
         enemiesBtn = new TextButton("Enemies", skin, "toggle");
+        playerBtn = new TextButton("Player", skin, "toggle");
         miscBtn = new TextButton("Misc", skin, "toggle");
-        table.setFillParent(true);
-        table.add(new Label("", skin)).width(200);
+        portalsBtn = new TextButton("Portals", skin, "toggle");
+        doorsBtn = new TextButton("Doors", skin, "toggle");
+        lightBtn = new TextButton("Light", skin, "toggle");
+
         table.add(floorsBtn).pad(2);
         table.add(wallsBtn).pad(2);
+        table.add(playerBtn).pad(2);
         table.add(enemiesBtn).pad(2);
         table.add(miscBtn).pad(2);
+        table.add(portalsBtn).pad(2);
+        table.add(doorsBtn).pad(2);
+        table.add(lightBtn).pad(2);
 
-        buttonGroup = new ButtonGroup(floorsBtn, wallsBtn, enemiesBtn, miscBtn);
+        buttonGroup = new ButtonGroup(floorsBtn, wallsBtn, playerBtn, enemiesBtn, miscBtn, portalsBtn,
+                                        doorsBtn, lightBtn);
         buttonGroup.setMaxCheckCount(1);
         buttonGroup.setMinCheckCount(1);
         buttonGroup.setChecked("Floors");
     }
 
-    public TextButton getWallsBtn() {
+    TextButton getWallsBtn() {
         return wallsBtn;
     }
 
-    public TextButton getFloorsBtn() {
+    TextButton getFloorsBtn() {
         return floorsBtn;
     }
 
-    public TextButton getEnemiesBtn() {
+    TextButton getEnemiesBtn() {
         return enemiesBtn;
     }
 
-    public TextButton getMiscBtn() {
+    TextButton getMiscBtn() {
         return miscBtn;
     }
+
+    TextButton getPortalsBtn() { return portalsBtn; }
+
+    TextButton getDoorsBtn() { return doorsBtn; }
+
+    TextButton getPlayerBtn() {return playerBtn;}
+
+    TextButton getLightBtn() {return lightBtn;}
+
 }

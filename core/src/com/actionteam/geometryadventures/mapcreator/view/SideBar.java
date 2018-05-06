@@ -20,15 +20,24 @@ public class SideBar extends Table {
     private Tab miscTab;
     private Tab enemyTab;
     private Tab selectedTab;
+    private Tab portalsTab;
+    private Tab doorsTab;
+    private Tab playerTab;
+    private Tab lightTab;
 
     public SideBar(Resources resources) {
         this.resources = resources;
+        lightTab = new Tab(resources.lights, resources);
         setBackground(new BackgroundColor(Color.rgba8888(1,1,1,0.3f)));
         initCategoryBar();
         floorsTab = new Tab(resources.floors, resources);
         wallsTab = new Tab(resources.walls, resources);
         miscTab = new Tab(resources.misc, resources);
         enemyTab = new Tab(resources.enemies, resources);
+        portalsTab = new Tab(resources.portals, resources);
+        doorsTab = new Tab(resources.doors, resources);
+        playerTab = new Tab(resources.players, resources);
+
         categoryChosen(floorsTab);
     }
 
@@ -60,6 +69,31 @@ public class SideBar extends Table {
                 categoryChosen(enemyTab);
             }
         });
+        categoryBar.getPortalsBtn().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                categoryChosen(portalsTab);
+            }
+        });
+        categoryBar.getDoorsBtn().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                categoryChosen(doorsTab);
+            }
+        });
+        categoryBar.getPlayerBtn().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                categoryChosen(playerTab);
+            }
+        });
+        categoryBar.getLightBtn().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                categoryChosen(lightTab);
+            }
+        });
+
     }
 
     public void categoryChosen(Tab tab) {
@@ -78,5 +112,9 @@ public class SideBar extends Table {
         wallsTab.setTextureBoxListener(textureBoxListener);
         miscTab.setTextureBoxListener(textureBoxListener);
         enemyTab.setTextureBoxListener(textureBoxListener);
+        doorsTab.setTextureBoxListener(textureBoxListener);
+        portalsTab.setTextureBoxListener(textureBoxListener);
+        playerTab.setTextureBoxListener(textureBoxListener);
+        lightTab.setTextureBoxListener(textureBoxListener);
     }
 }
