@@ -24,6 +24,7 @@ public class SideBar extends Table {
     private Tab doorsTab;
     private Tab playerTab;
     private Tab lightTab;
+    private Tab collectiblesTab;
 
     public SideBar(Resources resources) {
         this.resources = resources;
@@ -37,6 +38,7 @@ public class SideBar extends Table {
         portalsTab = new Tab(resources.portals, resources);
         doorsTab = new Tab(resources.doors, resources);
         playerTab = new Tab(resources.players, resources);
+        collectiblesTab = new Tab(resources.collectibles, resources);
 
         categoryChosen(floorsTab);
     }
@@ -94,6 +96,13 @@ public class SideBar extends Table {
             }
         });
 
+        categoryBar.getCollectiblesBtn().addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                categoryChosen(collectiblesTab);
+            }
+        });
+
     }
 
     public void categoryChosen(Tab tab) {
@@ -116,5 +125,6 @@ public class SideBar extends Table {
         portalsTab.setTextureBoxListener(textureBoxListener);
         playerTab.setTextureBoxListener(textureBoxListener);
         lightTab.setTextureBoxListener(textureBoxListener);
+        collectiblesTab.setTextureBoxListener(textureBoxListener);
     }
 }
