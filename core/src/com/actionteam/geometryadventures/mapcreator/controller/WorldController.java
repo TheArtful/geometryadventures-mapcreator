@@ -2,6 +2,7 @@ package com.actionteam.geometryadventures.mapcreator.controller;
 
 import com.actionteam.geometryadventures.mapcreator.Resources;
 import com.actionteam.geometryadventures.mapcreator.RuntimeTypeAdapterFactory;
+import com.actionteam.geometryadventures.mapcreator.model.CollectibleTile;
 import com.actionteam.geometryadventures.mapcreator.model.EnemyTile;
 import com.actionteam.geometryadventures.mapcreator.model.LightTile;
 import com.actionteam.geometryadventures.mapcreator.model.Map;
@@ -133,10 +134,10 @@ public class WorldController implements GestureDetector.GestureListener {
                     pos.x = (int) Math.floor(pos.x);
                     pos.y = (int) Math.floor(pos.y);
                     Tile tmp = map.searchTiles(pos.x, pos.y);
-                    if(tmp == null || tmp.z < selectModeTile.z) {
+                    if (tmp == null || tmp.z < selectModeTile.z) {
                         selectModeTile.x = pos.x;
                         selectModeTile.y = pos.y;
-                        if(selectModeTile.tileType.equals(TileType.LIGHT)) {
+                        if (selectModeTile.tileType.equals(TileType.LIGHT)) {
                             map.newLight = true;
                         }
                     }
@@ -294,12 +295,14 @@ public class WorldController implements GestureDetector.GestureListener {
                 Tile tile;
                 if (selectedTile.type.equals(TileType.PORTAL))
                     tile = new PortalTile();
-                else if(selectedTile.type.equals(TileType.ENEMY))
+                else if (selectedTile.type.equals(TileType.ENEMY))
                     tile = new EnemyTile();
-                else if(selectedTile.type.equals(TileType.PLAYER))
+                else if (selectedTile.type.equals(TileType.PLAYER))
                     tile = new PlayerTile();
-                else if(selectedTile.type.equals(TileType.LIGHT))
+                else if (selectedTile.type.equals(TileType.LIGHT))
                     tile = new LightTile();
+                else if (selectedTile.type.equals(TileType.COLLECTIBLE))
+                    tile = new CollectibleTile(selectedTile.subtype);
                 else
                     tile = new Tile();
                 tile.tileType = selectedTile.type;
@@ -311,7 +314,7 @@ public class WorldController implements GestureDetector.GestureListener {
                 tile.textureIndex = index;
                 tile.isAnimated = selectedTile.isAnimated;
                 tile.frames = selectedTile.frames;
-                tile.speed = selectedTile.speed != 0? selectedTile.speed : 1;
+                tile.speed = selectedTile.speed != 0 ? selectedTile.speed : 1;
                 map.addTile(tile);
             }
         }
@@ -340,8 +343,9 @@ public class WorldController implements GestureDetector.GestureListener {
 
     private void saveMap() {
         RuntimeTypeAdapterFactory<Tile> rtaf = RuntimeTypeAdapterFactory.of(Tile.class, "type").
-                registerSubtype(Tile.class).registerSubtype(PortalTile.class).registerSubtype(EnemyTile.class)
-                .registerSubtype(PlayerTile.class).registerSubtype(LightTile.class);
+                registerSubtype(Tile.class).registerSubtype(PortalTile.class).
+                registerSubtype(LightTile.class).registerSubtype(PlayerTile.class).
+                registerSubtype(EnemyTile.class).registerSubtype(CollectibleTile.class);
 
         Gson gson = new GsonBuilder().registerTypeAdapterFactory(rtaf).create();
         String json = gson.toJson(map);
@@ -363,7 +367,7 @@ public class WorldController implements GestureDetector.GestureListener {
             RuntimeTypeAdapterFactory<Tile> rtaf = RuntimeTypeAdapterFactory.of(Tile.class, "type").
                     registerSubtype(Tile.class).registerSubtype(PortalTile.class).
                     registerSubtype(LightTile.class).registerSubtype(PlayerTile.class).
-                    registerSubtype(EnemyTile.class);
+                    registerSubtype(EnemyTile.class).registerSubtype(CollectibleTile.class);
 
             Gson gson = new GsonBuilder().registerTypeAdapterFactory(rtaf).create();
             map = gson.fromJson(new FileReader(file), Map.class);

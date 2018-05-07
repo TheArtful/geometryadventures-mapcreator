@@ -17,6 +17,7 @@ public class TileType {
     public static final String COLLECTIBLE = "collectible";
 
     public String type;
+    public String subtype;
     public String textureName;
     public int xTiles;
     public int numberOfTiles;
@@ -36,6 +37,7 @@ public class TileType {
         this.isPattern = isPattern;
         this.z = z;
         this.collidable = collidable;
+        this.subtype = "";
     }
 
 }

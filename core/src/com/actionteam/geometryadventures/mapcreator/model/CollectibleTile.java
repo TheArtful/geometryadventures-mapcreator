@@ -5,6 +5,9 @@ package com.actionteam.geometryadventures.mapcreator.model;
  */
 
 public class CollectibleTile extends Tile {
-    public static final String[] COLLECTIBLE_TYPES = {"Heart", "Coin"};
-    public String type;
+    public String subtype;
+
+    public CollectibleTile(String subtype) {
+        this.subtype = subtype;
+    }
 }

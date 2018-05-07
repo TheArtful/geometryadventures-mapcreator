@@ -1,11 +1,13 @@
 [{"type":"floor","textureName":"grass","xTiles":2,"numberOfTiles":4, "isPattern":true, "z":1, "collidable":false},
-{"type":"wall","textureName":"grass","xTiles":2,"numberOfTiles":4, "isPattern":false, "z":1, "collidable":false},
-{"type":"player","textureName":"grass","xTiles":2,"numberOfTiles":4, "isPattern":true, "z":1, "collidable":false},
-{"type":"enemy","textureName":"grass","xTiles":2,"numberOfTiles":4, "isPattern":true, "z":1, "collidable":false},
+{"type":"wall","textureName":"walltree","xTiles":1,"numberOfTiles":2, "isPattern":false, "z":1, "collidable":true},
+{"type":"player","textureName":"playerchoice","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":1, "collidable":false},
+{"type":"enemy","textureName":"enemy","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":1, "collidable":false},
 {"type":"floor","textureName":"trunk","xTiles":2,"numberOfTiles":3, "isPattern":false, "z":1, "collidable":false},
 {"type":"floor","textureName":"grassb","xTiles":2,"numberOfTiles":5, "isPattern":false, "z":0, "collidable":false},
 {"type":"floor","textureName":"wallgrass","xTiles":2,"numberOfTiles":8, "isPattern":false, "z":0, "collidable":false},
 {"type":"floor","textureName":"stone","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":0, "collidable":false},
 {"type":"portal","textureName":"stone","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":0, "collidable":false},
-{"type":"light","textureName":"hearth","xTiles":1,"numberOfTiles":1, "frames":7, "isAnimated":true, "isPattern":false, "z":4, "collidable":true, "speed":100}
+{"type":"light","textureName":"hearth","xTiles":1,"numberOfTiles":1, "frames":7, "isAnimated":true, "isPattern":false, "z":4, "collidable":true, "speed":100}, 
+{"type":"collectible", "subtype":"heart", "textureName":"hearth","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":4, "collidable":true},
+{"type":"collectible", "subtype":"coin", "textureName":"grass","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":4, "collidable":true}
 ]
