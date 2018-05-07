@@ -40,9 +40,6 @@ public class World {
     private int uradius;
     private int ulightSources;
     private int utime;
-    private static final int MAX_NUMBER = 10;
-    private int time;
-
 
     public World(ShapeRenderer shapeRenderer, float unitsPerPixel, TextureAtlas textureAtlas, Map map) {
         this.shapeRenderer = shapeRenderer;
@@ -138,7 +135,7 @@ public class World {
             LightTile e = (LightTile) tile;
             shader.setUniformf(ulightPos + i, e.x + 0.5f, e.y + 0.5f);
             shader.setUniformf(ulightIntensity + i, e.lightIntensity);
-            shader.setUniformf(uradius + i, e.innerRadius, e.outerRadius);
+            shader.setUniformf(uradius + i, e.innerRadius);
             i++;
         }
         shader.setUniformi(ulightSources, i);
