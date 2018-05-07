@@ -22,6 +22,7 @@ public class CategoryBar extends ScrollPane {
     private TextButton portalsBtn;
     private TextButton doorsBtn;
     private TextButton lightBtn;
+    private TextButton collectiblesBtn;
     private ButtonGroup buttonGroup;
 
     public CategoryBar(Skin skin) {
@@ -35,6 +36,7 @@ public class CategoryBar extends ScrollPane {
         portalsBtn = new TextButton("Portals", skin, "toggle");
         doorsBtn = new TextButton("Doors", skin, "toggle");
         lightBtn = new TextButton("Light", skin, "toggle");
+        collectiblesBtn = new TextButton("Collectibles", skin, "toggle");
 
         table.add(floorsBtn).pad(2);
         table.add(wallsBtn).pad(2);
@@ -44,9 +46,10 @@ public class CategoryBar extends ScrollPane {
         table.add(portalsBtn).pad(2);
         table.add(doorsBtn).pad(2);
         table.add(lightBtn).pad(2);
+        table.add(collectiblesBtn).pad(2);
 
         buttonGroup = new ButtonGroup(floorsBtn, wallsBtn, playerBtn, enemiesBtn, miscBtn, portalsBtn,
-                                        doorsBtn, lightBtn);
+                doorsBtn, lightBtn, collectiblesBtn);
         buttonGroup.setMaxCheckCount(1);
         buttonGroup.setMinCheckCount(1);
         buttonGroup.setChecked("Floors");
@@ -68,12 +71,23 @@ public class CategoryBar extends ScrollPane {
         return miscBtn;
     }
 
-    TextButton getPortalsBtn() { return portalsBtn; }
+    TextButton getPortalsBtn() {
+        return portalsBtn;
+    }
 
-    TextButton getDoorsBtn() { return doorsBtn; }
+    TextButton getDoorsBtn() {
+        return doorsBtn;
+    }
 
-    TextButton getPlayerBtn() {return playerBtn;}
+    TextButton getPlayerBtn() {
+        return playerBtn;
+    }
 
-    TextButton getLightBtn() {return lightBtn;}
+    TextButton getLightBtn() {
+        return lightBtn;
+    }
 
+    TextButton getCollectiblesBtn() {
+        return collectiblesBtn;
+    }
 }

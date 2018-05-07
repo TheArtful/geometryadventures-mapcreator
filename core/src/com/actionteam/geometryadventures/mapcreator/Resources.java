@@ -34,6 +34,7 @@ public class Resources {
     public List<TileType> portals;
     public List<TileType> doors;
     public List<TileType> lights;
+    public List<TileType> collectibles;
     public TextureAtlas textureAtlas;
     public ShapeRenderer shapeRenderer;
     private boolean onlyFirstTime = true;
@@ -56,6 +57,7 @@ public class Resources {
         doors = new ArrayList<TileType>();
         players = new ArrayList<TileType>();
         lights = new ArrayList<TileType>();
+        collectibles = new ArrayList<TileType>();
         try {
             loadTileTypes();
         } catch (Exception e) {
@@ -109,6 +111,7 @@ public class Resources {
             else if (type.type.equals(TileType.PORTAL)) portals.add(type);
             else if (type.type.equals(TileType.PLAYER)) players.add(type);
             else if (type.type.equals(TileType.LIGHT)) lights.add(type);
+            else if (type.type.equals(TileType.COLLECTIBLE)) collectibles.add(type);
         }
         WeaponTypes.types =
                 Arrays.asList((String[])gson.fromJson(new FileReader("weapontypes.json"), String[].class));

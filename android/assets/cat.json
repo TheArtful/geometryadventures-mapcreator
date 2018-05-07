@@ -7,5 +7,7 @@
 {"type":"floor","textureName":"wallgrass","xTiles":2,"numberOfTiles":8, "isPattern":false, "z":0, "collidable":false},
 {"type":"floor","textureName":"stone","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":0, "collidable":false},
 {"type":"portal","textureName":"stone","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":0, "collidable":false},
-{"type":"light","textureName":"hearth","xTiles":1,"numberOfTiles":1, "frames":7, "isAnimated":true, "isPattern":false, "z":4, "collidable":true, "speed":100}
+{"type":"light","textureName":"hearth","xTiles":1,"numberOfTiles":1, "frames":7, "isAnimated":true, "isPattern":false, "z":4, "collidable":true, "speed":100}, 
+{"type":"collectible", "subtype":"heart", "textureName":"hearth","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":4, "collidable":true},
+{"type":"collectible", "subtype":"coin", "textureName":"grass","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":4, "collidable":true}
 ]

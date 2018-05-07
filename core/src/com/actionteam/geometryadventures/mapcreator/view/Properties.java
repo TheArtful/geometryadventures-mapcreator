@@ -1,6 +1,7 @@
 package com.actionteam.geometryadventures.mapcreator.view;
 
 import com.actionteam.geometryadventures.mapcreator.Resources;
+import com.actionteam.geometryadventures.mapcreator.model.CollectibleTile;
 import com.actionteam.geometryadventures.mapcreator.model.EnemyTile;
 import com.actionteam.geometryadventures.mapcreator.model.LightTile;
 import com.actionteam.geometryadventures.mapcreator.model.Map;
@@ -261,8 +262,16 @@ public class Properties extends Table {
                 addEnemyLayout();
             } else if (this.tile.tileType.equals(TileType.LIGHT)) {
                 addLightLayout();
+            } else if (this.tile.tileType.equals(TileType.COLLECTIBLE)) {
+                addCollectibleLayout();
             }
         }
+        table.row();
+    }
+
+    private void addCollectibleLayout() {
+        table.add(new Label("Collectible type: ", resources.skin));
+        table.add(new Label(((CollectibleTile)tile).subtype, resources.skin));
         table.row();
     }
 
