@@ -36,7 +36,7 @@ public class World {
     private int ambientLightLocation;
     private int ambientIntensityLocation;
     private int ulightPos;
-    private int ulightColor;
+    private int ulightIntensity;
     private int uradius;
     private int ulightSources;
     private int utime;
@@ -60,7 +60,7 @@ public class World {
         ambientIntensityLocation = shader.getUniformLocation("u_ambientIntensity");
 
         ulightPos = shader.getUniformLocation("u_lightPos[" + 0 + "]");
-        ulightColor = shader.getUniformLocation("u_lightColor[" + 0 + "]");
+        ulightIntensity = shader.getUniformLocation("u_lightIntensity[" + 0 + "]");
         uradius = shader.getUniformLocation("u_radius[" + 0 + "]");
         ulightSources = shader.getUniformLocation("u_lightSources");
         utime = shader.getUniformLocation("u_time");
@@ -106,7 +106,10 @@ public class World {
 
     public void render(float dt) {
         shader.begin();
-        if(map.newLight) {updateLights(); map.newLight = false;}
+        if (map.newLight) {
+            updateLights();
+            map.newLight = false;
+        }
         shader.setUniformi(utime, Clock.clock);
         shader.end();
         viewport.apply();
@@ -130,12 +133,11 @@ public class World {
         shader.setUniformf(ambientLightLocation, map.getConfig().ambientLight);
         shader.setUniformf(ambientIntensityLocation, map.getConfig().ambientIntensity);
         int i = 0;
-        for(Tile tile : map.getTiles()) {
-            if(!tile.tileType.equals(TileType.LIGHT)) continue;
+        for (Tile tile : map.getTiles()) {
+            if (!tile.tileType.equals(TileType.LIGHT)) continue;
             LightTile e = (LightTile) tile;
             shader.setUniformf(ulightPos + i, e.x + 0.5f, e.y + 0.5f);
-            shader.setUniformf(ulightColor + i, e.lightColor.x * e.lightIntensity
-                    , e.lightColor.y * e.lightIntensity, e.lightColor.z * e.lightIntensity);
+            shader.setUniformf(ulightIntensity + i, e.lightIntensity);
             shader.setUniformf(uradius + i, e.innerRadius, e.outerRadius);
             i++;
         }

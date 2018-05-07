@@ -48,6 +48,7 @@ public class WorldController implements GestureDetector.GestureListener {
     private int previewMode;
     private Map map;
     private Resources resources;
+    private Tile selectModeTile;
 
     public WorldController(Controller controller, Resources resources) {
         map = new Map();
@@ -101,6 +102,7 @@ public class WorldController implements GestureDetector.GestureListener {
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         if (startPan) return panStart(x, y, deltaX, deltaY);
+        Vector2 pos;
         switch (mode) {
             case FREE_MODE:
                 float dX = -deltaX * world.getUnitsPerPixel();
@@ -109,7 +111,7 @@ public class WorldController implements GestureDetector.GestureListener {
                 break;
             case DRAWING_MODE:
                 if (selectedTile != null) {
-                    Vector2 pos = world.getViewport().unproject(new Vector2(x, y));
+                    pos = world.getViewport().unproject(new Vector2(x, y));
                     pos.x = (int) Math.floor(pos.x);
                     pos.y = (int) Math.floor(pos.y);
                     if (selectedIndex == TextureBox.ALL && selectedTile.type.equals(TileType.WALL)) {
@@ -121,9 +123,24 @@ public class WorldController implements GestureDetector.GestureListener {
                 }
                 break;
             case DELETE_MODE:
-                Vector2 pos = world.getViewport().unproject(new Vector2(x, y));
+                pos = world.getViewport().unproject(new Vector2(x, y));
                 px2 = pos.x;
                 py2 = pos.y;
+                break;
+            case SELECT_MODE:
+                if (selectModeTile != null) {
+                    pos = world.getViewport().unproject(new Vector2(x, y));
+                    pos.x = (int) Math.floor(pos.x);
+                    pos.y = (int) Math.floor(pos.y);
+                    Tile tmp = map.searchTiles(pos.x, pos.y);
+                    if(tmp == null || tmp.z < selectModeTile.z) {
+                        selectModeTile.x = pos.x;
+                        selectModeTile.y = pos.y;
+                        if(selectModeTile.tileType.equals(TileType.LIGHT)) {
+                            map.newLight = true;
+                        }
+                    }
+                }
                 break;
         }
         return true;
@@ -167,6 +184,7 @@ public class WorldController implements GestureDetector.GestureListener {
                 x = (int) Math.floor(pos.x);
                 y = (int) Math.floor(pos.y);
                 Tile tile = world.getMap().searchTiles(x, y);
+                this.selectModeTile = tile;
                 Object[] mes = {tile, (int) x, (int) y};
                 controller.fireEvent(MyEvents.SHOW_PROPERTIES, mes);
                 break;
