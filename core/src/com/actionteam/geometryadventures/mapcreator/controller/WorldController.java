@@ -362,7 +362,7 @@ public class WorldController implements GestureDetector.GestureListener {
 
             RuntimeTypeAdapterFactory<Tile> rtaf = RuntimeTypeAdapterFactory.of(Tile.class, "type").
                     registerSubtype(Tile.class).registerSubtype(PortalTile.class).
-                    registerSubtype(LightTile.class);
+                    registerSubtype(LightTile.class).registerSubtype(PlayerTile.class).registerSubtype(EnemyTile.class);
 
             Gson gson = new GsonBuilder().registerTypeAdapterFactory(rtaf).create();
             map = gson.fromJson(new FileReader(file), Map.class);
