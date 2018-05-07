@@ -67,7 +67,7 @@ public class TileType {
     public boolean collidable;
     public boolean isAnimated;
     public int frames;
-    public float speed;
+    public int speed;
 
     public TileType(String type, String textureName, int xTiles, int numberOfTiles, boolean isPattern,
                     int z, boolean collidable) {

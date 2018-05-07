@@ -11,6 +11,8 @@ import com.actionteam.geometryadventures.mapcreator.model.TileType;
 import com.actionteam.geometryadventures.mapcreator.model.WeaponTypes;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -38,7 +40,6 @@ public class Properties extends Table {
     private TextField intensityField;
     private TextField innerField;
     private TextField outerField;
-    private TextButton applyBtn;
     private TextButton pickTileBtn;
     private ButtonGroup buttonGroup;
     private SelectBox<String> weaponSelect;
@@ -52,6 +53,16 @@ public class Properties extends Table {
     private Label closeButton;
     private Label paddingLabel;
     private Map map;
+    private EventListener typeListener = new EventListener() {
+        @Override
+        public boolean handle(Event event) {
+            if(event.toString().equals("keyTyped")) {
+                apply();
+                return true;
+            }
+            return false;
+        }
+    };
 
     Properties(final Resources resources) {
         table = new Table();
@@ -78,15 +89,7 @@ public class Properties extends Table {
         intensityField = new TextField("", resources.skin);
         innerField = new TextField("", resources.skin);
         outerField = new TextField("", resources.skin);
-        applyBtn = new TextButton("Apply", resources.skin);
         pickTileBtn = new TextButton("Pick Tile", resources.skin, "toggle");
-
-        applyBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                apply();
-            }
-        });
         pickTileBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -134,6 +137,14 @@ public class Properties extends Table {
         paddingLabel.setHeight(100);
         x = 0;
         y = 100;
+
+        rField.addListener(typeListener);
+        gField.addListener(typeListener);
+        bField.addListener(typeListener);
+        intensityField.addListener(typeListener);
+        innerField.addListener(typeListener);
+        outerField.addListener(typeListener);
+        healthField.addListener(typeListener);
     }
 
     private int incrementPosition(float dx, float dy) {
@@ -231,6 +242,7 @@ public class Properties extends Table {
             portalY = y;
             pickTile = false;
             buttonGroup.uncheckAll();
+            apply();
         } else {
             this.tile = tile;
             portalX = -1;
@@ -251,11 +263,6 @@ public class Properties extends Table {
                 addLightLayout();
             }
         }
-
-        table.row();
-        table.add(applyBtn).colspan(2);
-        table.row();
-        table.add(paddingLabel).height(100).width(1).colspan(2);
         table.row();
     }
 

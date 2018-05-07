@@ -39,7 +39,9 @@ public class World {
     private int ulightColor;
     private int uradius;
     private int ulightSources;
+    private int utime;
     private static final int MAX_NUMBER = 10;
+    private int time;
 
 
     public World(ShapeRenderer shapeRenderer, float unitsPerPixel, TextureAtlas textureAtlas, Map map) {
@@ -61,6 +63,7 @@ public class World {
         ulightColor = shader.getUniformLocation("u_lightColor[" + 0 + "]");
         uradius = shader.getUniformLocation("u_radius[" + 0 + "]");
         ulightSources = shader.getUniformLocation("u_lightSources");
+        utime = shader.getUniformLocation("u_time");
     }
 
     public World(TextureAtlas textureAtlas, Map map) {
@@ -102,7 +105,10 @@ public class World {
     }
 
     public void render(float dt) {
+        shader.begin();
         if(map.newLight) {updateLights(); map.newLight = false;}
+        shader.setUniformi(utime, Clock.clock);
+        shader.end();
         viewport.apply();
         drawGrid();
         batch.begin();
@@ -121,7 +127,6 @@ public class World {
     }
 
     private void updateLights() {
-        shader.begin();
         shader.setUniformf(ambientLightLocation, map.getConfig().ambientLight);
         shader.setUniformf(ambientIntensityLocation, map.getConfig().ambientIntensity);
         int i = 0;
@@ -135,7 +140,6 @@ public class World {
             i++;
         }
         shader.setUniformi(ulightSources, i);
-        shader.end();
 
     }
 

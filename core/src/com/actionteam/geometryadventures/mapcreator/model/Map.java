@@ -34,7 +34,8 @@ public class Map {
         Gdx.app.log("Adding Tile", "x: " + tile.x + ", y: " + tile.y + ", textureName: " +
                 tile.textureName + ", index:" + tile.textureIndex);
 
-        newLight = true;
+        if(tile.tileType.equals(TileType.LIGHT))
+            newLight = true;
 
         for (Tile t : tiles) {
             if (t.x == tile.x && t.y == tile.y && t.z == tile.z) {
@@ -55,7 +56,6 @@ public class Map {
                 return (tile.z - t1.z < 0) ? 1 : -1;
             }
         });
-        config = new MapConfig();
     }
 
     public Tile searchTiles(float x, float y) {
@@ -72,6 +72,8 @@ public class Map {
 
     public void removeTile(Tile tile) {
         if (tile == null) return;
+        if(tile.tileType.equals(TileType.LIGHT))
+            newLight = true;
         tiles.remove(tile);
         Gdx.app.log("Removing tile", "x: " + tile.x + ", y : " + tile.y);
     }

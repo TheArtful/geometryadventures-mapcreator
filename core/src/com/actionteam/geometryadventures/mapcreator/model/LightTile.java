@@ -14,8 +14,8 @@ public class LightTile extends Tile {
 
     public LightTile() {
         lightColor = new Vector3(1, 1, 1);
-        innerRadius = 2;
-        outerRadius = 3;
+        innerRadius = 20;
+        outerRadius = 40;
         lightIntensity = 0.7f;
     }
 }
