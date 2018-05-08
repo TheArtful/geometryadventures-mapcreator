@@ -14,7 +14,7 @@ uniform int u_lightSources;
 
 uniform vec3 u_ambientLight;
 uniform float u_ambientIntensity;
-uniform int u_time;
+uniform float u_time;
 
 uniform sampler2D u_texture;
 
@@ -30,21 +30,23 @@ float rand(vec2 co)
 
 void main()
 {
-    float t = float(u_time);
     vec4 color = (v_color * texture2D(u_texture, v_texCoords));
-    vec3 light = u_ambientLight * u_ambientIntensity;
 
-    float lightIntensity = 0.f;
+    float lightIntensity = 0.0;
+
     for(int i = 0; i < u_lightSources; i++)
     {
         float radius = (v_pos.x - u_lightPos[i].x) * (v_pos.x - u_lightPos[i].x)
                             + (v_pos.y - u_lightPos[i].y) * (v_pos.y - u_lightPos[i].y) +
-                             2.f * rand((6.f * t) * v_pos.xy);
-        lightIntensity += u_lightIntensity[i] * pow(2.718, -radius / u_radius[i]);
+                            0.5 * rand((6.0 * u_time) * v_pos.xy);
+        lightIntensity += u_lightIntensity[i] * u_radius[i]  / ((radius) * (radius) + 1.0);
+                //pow(2.718, -radius / u_radius[i]);
+
     }
 
-    if(lightIntensity > 1.f) lightIntensity = 1.f;
-    lightIntensity = float(int(lightIntensity * 4.f)) / 4.f;
+    lightIntensity = 1.0/(pow(2.718, -4.0 * lightIntensity + 2.0) + 1.0);
+    lightIntensity = float(int(lightIntensity * 4.0)) / 4.0;
+
 
     color *= vec4(vec3(lightIntensity + u_ambientIntensity), 1);
     gl_FragColor = color;
