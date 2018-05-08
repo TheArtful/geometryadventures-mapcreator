@@ -6,8 +6,9 @@ package com.actionteam.geometryadventures.mapcreator.model;
 
 public class CollectibleTile extends Tile {
     public String subtype;
-
+    public int value;
     public CollectibleTile(String subtype) {
         this.subtype = subtype;
+        this.value = 1;
     }
 }

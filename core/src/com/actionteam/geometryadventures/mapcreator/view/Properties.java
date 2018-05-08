@@ -270,7 +270,7 @@ public class Properties extends Table {
     }
 
     private void addCollectibleLayout() {
-        table.add(new Label("Collectible type: ", resources.skin));
+        table.add(new Label("Collectible value: ", resources.skin));
         table.add(new Label(((CollectibleTile)tile).subtype, resources.skin));
         table.row();
     }
