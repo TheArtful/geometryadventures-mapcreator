@@ -5,6 +5,6 @@ package com.actionteam.geometryadventures.mapcreator.model;
  */
 
 public class EnemyTile extends Tile {
-    public String weaponType = "no weapon";
+    public String subtype = "no weapon";
     public int health;
 }

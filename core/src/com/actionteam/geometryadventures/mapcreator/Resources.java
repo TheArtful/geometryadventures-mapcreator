@@ -114,7 +114,7 @@ public class Resources {
             else if (type.type.equals(TileType.COLLECTIBLE)) collectibles.add(type);
         }
         WeaponTypes.types =
-                Arrays.asList((String[])gson.fromJson(new FileReader("weapontypes.json"), String[].class));
+                Arrays.asList((String[])gson.fromJson(new FileReader("enemytypes.json"), String[].class));
         return true;
     }
 

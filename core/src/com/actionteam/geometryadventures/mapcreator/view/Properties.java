@@ -207,7 +207,7 @@ public class Properties extends Table {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ((EnemyTile) tile).weaponType = weapon;
+            ((EnemyTile) tile).subtype = weapon;
             ((EnemyTile) tile).health = health;
         } else if (this.tile.tileType.equals(TileType.LIGHT)) {
             try {
@@ -339,7 +339,7 @@ public class Properties extends Table {
     }
 
     private void addEnemyLayout() {
-        table.add(new Label("Weapon: ", resources.skin));
+        table.add(new Label("Subtype: ", resources.skin));
         table.add(weaponSelect);
         table.row();
         table.add(new Label("Health: ", resources.skin));
@@ -347,7 +347,7 @@ public class Properties extends Table {
         table.row();
 
         healthField.setText(String.valueOf(((EnemyTile) tile).health));
-        weaponSelect.setSelected(((EnemyTile) tile).weaponType);
+        weaponSelect.setSelected(((EnemyTile) tile).subtype);
     }
 
     private void setNullLayout() {
