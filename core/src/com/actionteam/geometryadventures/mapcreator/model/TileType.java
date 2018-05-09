@@ -15,6 +15,7 @@ public class TileType {
     public static final String DOOR = "door";
     public static final String LIGHT = "light";
     public static final String COLLECTIBLE = "collectible";
+    public static final String Endportal = "endportal";
 
     public String type;
     public String subtype;

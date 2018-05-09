@@ -7,6 +7,7 @@
 {"type":"floor","textureName":"wallgrass","xTiles":2,"numberOfTiles":8, "isPattern":false, "z":0, "collidable":false},
 {"type":"floor","textureName":"stone","xTiles":1,"numberOfTiles":1, "isPattern":false, "z":0, "collidable":false},
 {"type":"portal","textureName":"portal","xTiles":1,"numberOfTiles":1, "isPattern":false, "isAnimated": true, "frames": 9, "z":1, "collidable":true, "speed": 100},
+{"type":"misc","textureName":"endportal","xTiles":1,"numberOfTiles":1, "isPattern":false, "isAnimated": true, "frames": 9, "z":1, "collidable":true, "speed": 100},
 {"type":"light","textureName":"hearth","xTiles":1,"numberOfTiles":1, "frames":7, "isAnimated":true, "isPattern":false, "z":4, "collidable":true, "speed":100}, 
 {"type":"collectible", "subtype":"heart", "textureName":"heart","xTiles":1,"numberOfTiles":1, "isPattern":false, "isAnimated": true, "frames": 10, "speed": 150, "z":4, "collidable":true},
 {"type":"collectible", "subtype":"coin", "textureName":"coin","xTiles":1,"numberOfTiles":1, "isPattern":false, "isAnimated": true, "frames": 9, "speed": 150, "z":4, "collidable":true}
